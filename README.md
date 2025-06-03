@@ -1,14 +1,15 @@
 # Neo4j MCP SSE Bridge
 
-Production-ready Server-Sent Events (SSE) bridge for Model Context Protocol (MCP) with Neo4j knowledge graph functionality.
+Production-ready Server-Sent Events (SSE) bridge for Model Context Protocol (MCP) with Neo4j knowledge graph functionality, designed for deployment at memory.aynshteyn.dev/mcp.
 
 ## Features
 
 - **Knowledge Graph Management**: Create, read, update, and delete entities and relationships
 - **Memory Persistence**: Store conversation context and insights across sessions
 - **Cypher Query Execution**: Direct Neo4j database access for advanced operations
-- **SSE Connectivity**: Real-time communication with MCP clients
+- **SSE Connectivity**: Real-time communication with MCP clients over HTTPS
 - **Production Security**: SSL/TLS encryption and secure authentication
+- **Domain-Ready**: Pre-configured for memory.aynshteyn.dev deployment
 
 ## Quick Start
 
@@ -23,6 +24,15 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+## Production Deployment
+
+The server is designed for deployment at **https://memory.aynshteyn.dev/mcp**
+
+- **Development**: Runs on HTTP port 8000 without SSL
+- **Production**: Runs on HTTPS port 443 with SSL certificates
+- **Transport**: SSE (Server-Sent Events) for real-time communication
+- **Path**: Serves MCP functionality on `/mcp` endpoint
 
 ## Core Functionality
 
@@ -48,7 +58,6 @@ The `servers/` directory contains standalone MCP servers that operate over STDIO
 - **mcp-neo4j-memory**: Knowledge graph memory storage
 - **mcp-neo4j-cypher**: Natural language to Cypher translation
 - **mcp-neo4j-cloud-aura-api**: Neo4j Aura cloud management
-- **mcp-neo4j-http-proxy**: HTTP proxy functionality
 
 These servers can be used independently with any MCP client that supports STDIO communication.
 

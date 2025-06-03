@@ -29,6 +29,7 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
+# Configure FastMCP for SSE transport on /mcp path
 mcp = FastMCP("Neo4j MCP Bridge")
 
 @mcp.tool()
@@ -318,25 +319,26 @@ def execute_cypher(query: str) -> str:
     return f"Query executed successfully. Results: {records}"
 
 if __name__ == "__main__":
-    # Check SSL availability and adjust configuration
-    ssl_config = {}
+    # Check SSL availability and determine transport configuration
     if settings.ssl_available():
-        ssl_config = {
-            "ssl_keyfile": settings.ssl_keyfile,
-            "ssl_certfile": settings.ssl_certfile
-        }
-        print(f"Starting server with SSL on {settings.http_host}:{settings.http_port}")
+        print(f"Starting Neo4j MCP Bridge with SSL on https://{settings.http_host}:{settings.http_port}{settings.http_path}")
+        mcp.run(
+            transport="sse", 
+            host=settings.http_host,
+            port=settings.http_port,
+            path=settings.http_path,
+            ssl_keyfile=settings.ssl_keyfile,
+            ssl_certfile=settings.ssl_certfile
+        )
     else:
         # Fall back to HTTP for development
         if settings.http_port == 443:
             settings.http_port = 8000
-        print(f"SSL certificates not found, starting HTTP server on {settings.http_host}:{settings.http_port}")
+        print(f"SSL certificates not found, starting HTTP server on http://{settings.http_host}:{settings.http_port}{settings.http_path}")
         print("For production deployment, ensure SSL certificates are available at the specified paths")
-    
-    uvicorn.run(
-        "main:mcp",
-        host=settings.http_host,
-        port=settings.http_port,
-        access_log=False,
-        **ssl_config
-    ) 
+        mcp.run(
+            transport="sse",
+            host=settings.http_host, 
+            port=settings.http_port,
+            path=settings.http_path
+        ) 
