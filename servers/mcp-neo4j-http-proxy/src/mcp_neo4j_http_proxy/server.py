@@ -190,10 +190,12 @@ class Neo4jMemory:
 
 async def create_http_proxy(neo4j_url: str, neo4j_username: str, neo4j_password: str, 
                            neo4j_database: str, host: str = "0.0.0.0", port: int = 8000, 
-                           path: str = "/mcp"):
+                           path: str = "/mcp", ssl_certfile: str = None, ssl_keyfile: str = None,
+                           ssl_enabled: bool = False):
     """Create and run the HTTP proxy server for Neo4j Memory MCP."""
     
-    logger.info(f"Starting Neo4j MCP HTTP Server on {host}:{port}")
+    protocol = "https" if ssl_enabled and ssl_certfile and ssl_keyfile else "http"
+    logger.info(f"Starting Neo4j MCP HTTP Server on {protocol}://{host}:{port}")
 
     # Connect to Neo4j
     neo4j_driver = GraphDatabase.driver(
@@ -326,6 +328,17 @@ async def create_http_proxy(neo4j_url: str, neo4j_username: str, neo4j_password:
     async def health_check(request) -> dict:
         return {"status": "healthy", "service": "mcp-neo4j-memory-http"}
     
-    # Start server
-    logger.info(f"Server running: http://{host}:{port}/sse")
-    await mcp.run_async(transport="sse", host=host, port=port, log_level="info") 
+    # Start server with SSL support
+    if ssl_enabled and ssl_certfile and ssl_keyfile:
+        logger.info(f"SSL enabled - Server running: https://{host}:{port}/sse")
+        await mcp.run_async(
+            transport="sse", 
+            host=host, 
+            port=port, 
+            log_level="info",
+            ssl_certfile=ssl_certfile,
+            ssl_keyfile=ssl_keyfile
+        )
+    else:
+        logger.info(f"Server running: http://{host}:{port}/sse")
+        await mcp.run_async(transport="sse", host=host, port=port, log_level="info") 

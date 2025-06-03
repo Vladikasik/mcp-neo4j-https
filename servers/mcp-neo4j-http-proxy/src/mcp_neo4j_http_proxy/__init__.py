@@ -34,6 +34,18 @@ def main():
                        default=os.getenv("HTTP_PATH", "/mcp"),
                        help='HTTP endpoint path')
     
+    # SSL/HTTPS arguments
+    parser.add_argument('--ssl-certfile',
+                       default=os.getenv("SSL_CERTFILE"),
+                       help='Path to SSL certificate file (.pem)')
+    parser.add_argument('--ssl-keyfile',
+                       default=os.getenv("SSL_KEYFILE"),
+                       help='Path to SSL private key file (.pem)')
+    parser.add_argument('--ssl',
+                       action='store_true',
+                       default=os.getenv("SSL_ENABLED", "").lower() in ("true", "1", "yes"),
+                       help='Enable SSL/HTTPS')
+    
     args = parser.parse_args()
     
     # Run the HTTP proxy server
@@ -44,7 +56,10 @@ def main():
         neo4j_database=args.database,
         host=args.host,
         port=args.port,
-        path=args.path
+        path=args.path,
+        ssl_certfile=args.ssl_certfile,
+        ssl_keyfile=args.ssl_keyfile,
+        ssl_enabled=args.ssl
     ))
 
 
