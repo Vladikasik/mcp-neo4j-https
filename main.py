@@ -318,18 +318,36 @@ def execute_cypher(query: str) -> str:
     driver.close()
     return f"Query executed successfully. Results: {records}"
 
+async def run_server_with_ssl():
+    """Run FastMCP server with SSL using custom uvicorn configuration"""
+    from fastapi import FastAPI
+    from starlette.routing import Mount
+    
+    # Get the FastMCP SSE app
+    mcp_app = mcp.sse_app()
+    
+    # Create a main FastAPI app to mount the MCP app on the correct path
+    app = FastAPI()
+    app.mount(settings.http_path, mcp_app)
+    
+    # Configure uvicorn with SSL
+    config = uvicorn.Config(
+        app,
+        host=settings.http_host,
+        port=settings.http_port,
+        ssl_keyfile=settings.ssl_keyfile,
+        ssl_certfile=settings.ssl_certfile,
+        access_log=False
+    )
+    
+    server = uvicorn.Server(config)
+    await server.serve()
+
 if __name__ == "__main__":
-    # Check SSL availability and determine transport configuration
+    # Check SSL availability and determine configuration
     if settings.ssl_available():
         print(f"Starting Neo4j MCP Bridge with SSL on https://{settings.http_host}:{settings.http_port}{settings.http_path}")
-        mcp.run(
-            transport="sse", 
-            host=settings.http_host,
-            port=settings.http_port,
-            path=settings.http_path,
-            ssl_keyfile=settings.ssl_keyfile,
-            ssl_certfile=settings.ssl_certfile
-        )
+        asyncio.run(run_server_with_ssl())
     else:
         # Fall back to HTTP for development
         if settings.http_port == 443:

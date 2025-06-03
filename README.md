@@ -34,6 +34,14 @@ The server is designed for deployment at **https://memory.aynshteyn.dev/mcp**
 - **Transport**: SSE (Server-Sent Events) for real-time communication
 - **Path**: Serves MCP functionality on `/mcp` endpoint
 
+### SSL Certificate Requirements
+
+For production deployment with SSL, ensure the SSL certificate files exist at the paths specified in your `.env` file:
+- `SSL_CERTFILE` must point to a valid SSL certificate file
+- `SSL_KEYFILE` must point to the corresponding private key file
+
+The server automatically detects SSL certificate availability and falls back to HTTP for development if certificates are not found.
+
 ## Core Functionality
 
 ### Entity Management
