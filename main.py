@@ -347,19 +347,7 @@ if __name__ == "__main__":
     # Check SSL availability and determine configuration
     if settings.ssl_available():
         print(f"Starting Neo4j MCP Bridge with SSL on https://{settings.http_host}:{settings.http_port}{settings.http_path}")
-        
-        # Use modern streamable-http transport with SSL
-        import ssl
-        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        ssl_context.load_cert_chain(settings.ssl_certfile, settings.ssl_keyfile)
-        
-        mcp.run(
-            transport="streamable-http",
-            host=settings.http_host,
-            port=settings.http_port,
-            path=settings.http_path,
-            ssl_context=ssl_context
-        )
+        asyncio.run(run_server_with_ssl())
     else:
         # Fall back to HTTP for development
         if settings.http_port == 443:
