@@ -1,47 +1,56 @@
-# Neo4j MCP Clients & Servers
+# Neo4j MCP SSE Bridge
 
-Model Context Protocol (MCP) is a [standardized protocol](https://modelcontextprotocol.io/introduction) for managing context between large language models (LLMs) and external systems. 
+Production-ready Server-Sent Events (SSE) bridge for Model Context Protocol (MCP) with Neo4j knowledge graph functionality.
 
-This lets you use Claude Desktop, or any other MCP Client (VS Code, Cursor, Windsurf), to use natural language to accomplish things with Neo4j and your Aura account, e.g.:
+## Features
 
-* What is in this graph?
-* Render a chart from the top products sold by frequency, total and average volume
-* List my instances
-* Create a new instance named mcp-test for Aura Professional with 4GB and Graph Data Science enabled
-* Store the fact that I worked on the Neo4j MCP Servers today with Andreas and Oskar
+- **Knowledge Graph Management**: Create, read, update, and delete entities and relationships
+- **Memory Persistence**: Store conversation context and insights across sessions
+- **Cypher Query Execution**: Direct Neo4j database access for advanced operations
+- **SSE Connectivity**: Real-time communication with MCP clients
+- **Production Security**: SSL/TLS encryption and secure authentication
 
-## Servers
+## Quick Start
 
-### `mcp-neo4j-cypher` - natural language to Cypher queries
+1. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-[Details in Readme](./servers/mcp-neo4j-cypher/)
+2. Configure environment variables in `.env` file
 
-Get database schema for a configured database and exeucte generated read and write Cypher queries on that database.
+3. Run the server:
+```bash
+python main.py
+```
 
-### `mcp-neo4j-memory` - knowledge graph memory stored in Neo4j
+## Core Functionality
 
-[Details in Readme](./servers/mcp-neo4j-memory/)
+### Entity Management
+- Create and organize knowledge entities with types and observations
+- Establish relationships between entities using active voice descriptions
+- Search and retrieve entities by name, type, or content
 
-Store and retrieve entities and relationships from your personal knowledge graph in a local or remote Neo4j instance.
-Access that information over different sessions, conversations, clients.
+### Knowledge Graph Operations
+- Full graph reading and visualization
+- Targeted entity searches and filtering
+- Bulk operations for efficient data management
 
-### `mcp-neo4j-cloud-aura-api` - Neo4j Aura cloud service management API
+### Database Integration
+- Direct Cypher query execution for advanced operations
+- Secure Neo4j connection with authentication
+- Support for both local and cloud Neo4j instances
 
-[Details in Readme](./servers/mcp-neo4j-cloud-aura-api//)
+## STDIO Servers
 
-Manage your [Neo4j Aura](https://console.neo4j.io) instances directly from the comfort of your AI assistant chat.
+The `servers/` directory contains standalone MCP servers that operate over STDIO:
 
-Create and destroy instances, find instances by name, scale them up and down and enable features.
+- **mcp-neo4j-memory**: Knowledge graph memory storage
+- **mcp-neo4j-cypher**: Natural language to Cypher translation
+- **mcp-neo4j-cloud-aura-api**: Neo4j Aura cloud management
+- **mcp-neo4j-http-proxy**: HTTP proxy functionality
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Blog Posts
-
-* [Everything a Developer Needs to Know About the Model Context Protocol (MCP)](https://neo4j.com/blog/developer/model-context-protocol/)
-* [Claude Converses With Neo4j Via MCP - Graph Database & Analytics](https://neo4j.com/blog/developer/claude-converses-neo4j-via-mcp/)
-* [Building Knowledge Graphs With Claude and Neo4j: A No-Code MCP Approach - Graph Database & Analytics](https://neo4j.com/blog/developer/knowledge-graphs-claude-neo4j-mcp/)
+These servers can be used independently with any MCP client that supports STDIO communication.
 
 ## License
 
